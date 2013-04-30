@@ -24,21 +24,22 @@ void readVol()
     for(int i = 0; i<8; i++)
     {
         Serial.print(volX[i]);
-        Serial.print('\t');
+        Serial.print("\t\t");
+        if(i>=5)Serial.print("\t");
     }
     
     Serial.print("\r\nvolY:\t");
     for(int i = 0; i<8; i++)
     {
         Serial.print(volY[i]);
-        Serial.print('\t');
+        Serial.print("\t\t");
     }
         
     Serial.print("\r\nvolY_n:\t");
     for(int i = 0; i<8; i++)
     {
         Serial.print(volY_n[i]);
-        Serial.print('\t');
+        Serial.print("\t\t");
     }
     Serial.println();
     
@@ -132,21 +133,21 @@ void readMAMP()
     for(int i = 0; i<2; i++)
     {
         Serial.print(mampX[i]);
-        Serial.print('\t');
+        Serial.print("\t\t");
     }
     
     Serial.print("\r\nampY:\t");
     for(int i = 0; i<2; i++)
     {
-        Serial.print(mampY[i]);
-        Serial.print('\t');
+        Serial.print((long)mampY[i]);
+        Serial.print("\t\t");
     }
         
     Serial.print("\r\nmampY_n:\t");
     for(int i = 0; i<2; i++)
     {
-        Serial.print(mampY_n[i]);
-        Serial.print('\t');
+        Serial.print((long)mampY_n[i]);
+        Serial.print("\t\t");
     }
     Serial.println();
 }
@@ -160,6 +161,9 @@ void setup()
         Serial.println("bluetooth multimeter hadn't been configed!");
         while(1);                   // die here
     }
+    
+    readVol();
+    
 
 }
 
