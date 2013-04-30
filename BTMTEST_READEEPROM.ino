@@ -5,157 +5,197 @@
 #include "eeprom_manage.h"
 #include "BTMGlobalDfs.h"
 
+#define SPACE   15
+
+#define VOL     1
+#define OHM     1
+#define AMP     1
+#define MAMP    1
+
+#if VOL || AMP || MAMP
+int dtaX[8];
+#endif
+
+#if OHM
+long l_dtaX[8];
+#endif
+
+float dtaY[8];
+float dtaY_n[8];
+
+int nt = 0;
+    
+
+void dispSpace(int n)
+{
+    if(n>20 || n < 1)return;
+    char tmp[] = "                   ";
+    tmp[n] = '\0';
+    Serial.print(tmp);
+}
+
 void readVol()
 {
-    int volX[8];
-    float volY[8];
-    float volY_n[8];
-    
+#if VOL
+
     for(int i = 0; i<8; i++)        // volX
     {
-        EEPM.read(EEPADDRVOLX  +2*i, &volX[i], sizeof(int));
-        EEPM.read(EEPADDRVOLY  +4*i, &volY[i], sizeof(float));
-        EEPM.read(EEPADDRVOLY_N+4*i, &volY_n[i], sizeof(float));
+        EEPM.read(EEPADDRVOLX  +2*i, &dtaX[i], sizeof(int));
+        EEPM.read(EEPADDRVOLY  +4*i, &dtaY[i], sizeof(float));
+        EEPM.read(EEPADDRVOLY_N+4*i, &dtaY_n[i], sizeof(float));
     }
     
-    Serial.println("----------VOL DATA:----------");
+    Serial.println("\r\n\r\n----------VOL DATA:----------\r\n");
     
-    Serial.print("volX:\t");
+    nt = Serial.print("volX:");
+    dispSpace(SPACE-nt);
     for(int i = 0; i<8; i++)
     {
-        Serial.print(volX[i]);
-        Serial.print("\t\t");
-        if(i>=5)Serial.print("\t");
-    }
-    
-    Serial.print("\r\nvolY:\t");
-    for(int i = 0; i<8; i++)
-    {
-        Serial.print(volY[i]);
-        Serial.print("\t\t");
-    }
         
-    Serial.print("\r\nvolY_n:\t");
+        nt = Serial.print(dtaX[i]);
+        dispSpace(SPACE-nt);
+    }
+    
+    Serial.println();
+    nt = Serial.print("volY:");
+    dispSpace(SPACE-nt);
     for(int i = 0; i<8; i++)
     {
-        Serial.print(volY_n[i]);
-        Serial.print("\t\t");
+        nt = Serial.print(dtaY[i]);
+        dispSpace(SPACE-nt);
+    }
+    
+    Serial.println();
+    nt = Serial.print("volY_n:");
+    dispSpace(SPACE-nt);
+    for(int i = 0; i<8; i++)
+    {
+       nt = Serial.print(dtaY_n[i]);
+       dispSpace(SPACE-nt);
     }
     Serial.println();
-    
+#endif
 }
+
 
 void readOhm()
 {
-    long ohmX[8];
-    float ohmY[8];
-    
+#if OHM
     for(int i = 0; i<8; i++)
     {
-        EEPM.read(EEPADDROHMX  +4*i, &ohmX[i], sizeof(long));
-        EEPM.read(EEPADDROHMY  +4*i, &ohmY[i], sizeof(float));
+        EEPM.read(EEPADDROHMX +4*i, &l_dtaX[i], sizeof(long));
+        EEPM.read(EEPADDROHMY +4*i, &dtaY[i], sizeof(float));
     }
     
+    Serial.println("\r\n\r\n----------OHM DATA:----------\r\n");
     
-    Serial.println("----------OHM DATA:----------");
-    
-    Serial.print("ohmX:\t");
+    nt = Serial.print("ohmX:");
+    dispSpace(SPACE-nt);
     for(int i = 0; i<8; i++)
     {
-        Serial.print(ohmX[i]);
-        Serial.print('\t');
+        nt = Serial.print(l_dtaX[i]);
+        dispSpace(SPACE-nt);
     }
     
-    Serial.print("\r\nvolY:\t");
+    Serial.println();
+    nt = Serial.print("ohmY:");
+    dispSpace(SPACE-nt);
+    
     for(int i = 0; i<8; i++)
     {
-        Serial.print(ohmY[i]);
-        Serial.print('\t');
+        nt = Serial.print(dtaY[i]);
+        dispSpace(SPACE-nt);
     }
     Serial.println();
-    
+#endif
 }
 
 void readAmp()
 {
-    int ampX[4];
-    float ampY[4];
-    float ampY_n[4];
-    
+#if AMP
     for(int i = 0; i<4; i++)        // ampX
     {
-        EEPM.read(EEPADDRAMPX  +2*i, &ampX[i], sizeof(int));
-        EEPM.read(EEPADDRAMPY  +4*i, &ampY[i], sizeof(float));
-        EEPM.read(EEPADDRAMPY_N+4*i, &ampY_n[i], sizeof(float));
+        EEPM.read(EEPADDRAMPX  +2*i, &dtaX[i], sizeof(int));
+        EEPM.read(EEPADDRAMPY  +4*i, &dtaY[i], sizeof(float));
+        EEPM.read(EEPADDRAMPY_N+4*i, &dtaY_n[i], sizeof(float));
     }
     
-    Serial.println("----------AMP DATA:----------");
+    Serial.println("\r\n\r\n----------AMP DATA:----------\r\n");
     
-    Serial.print("ampX:\t");
+    nt = Serial.print("ampX:");
+    dispSpace(SPACE-nt);
     for(int i = 0; i<4; i++)
     {
-        Serial.print(ampX[i]);
-        Serial.print('\t');
+        nt = Serial.print(dtaX[i]);
+        dispSpace(SPACE-nt);
     }
     
-    Serial.print("\r\nampY:\t");
+    Serial.println();
+    nt = Serial.print("ampY:");
+    dispSpace(SPACE-nt);
     for(int i = 0; i<4; i++)
     {
-        Serial.print(ampY[i]);
-        Serial.print('\t');
+        nt = Serial.print(dtaY[i]);
+        dispSpace(SPACE-nt);
     }
-        
-    Serial.print("\r\nampY_n:\t");
+    
+    Serial.println();
+    Serial.print("ampY_n:");
+    dispSpace(SPACE-nt);
     for(int i = 0; i<4; i++)
     {
-        Serial.print(ampY_n[i]);
-        Serial.print('\t');
+        nt = Serial.print(dtaY_n[i]);
+        dispSpace(SPACE-nt);
     }
     Serial.println();
+    
+#endif
 }
 
 void readMAMP()
 {
-    int mampX[2];
-    float mampY[2];
-    float mampY_n[2];
-    
+#if MAMP
     for(int i = 0; i<2; i++)
     {
-        EEPM.read(EEPADDRMAMPX  +2*i, &mampX[i], sizeof(int));
-        EEPM.read(EEPADDRMAMPY  +4*i, &mampY[i], sizeof(float));
-        EEPM.read(EEPADDRMAMPY_N+4*i, &mampY_n[i], sizeof(float));
+        EEPM.read(EEPADDRMAMPX  +2*i, &dtaX[i], sizeof(int));
+        EEPM.read(EEPADDRMAMPY  +4*i, &dtaY[i], sizeof(float));
+        EEPM.read(EEPADDRMAMPY_N+4*i, &dtaY_n[i], sizeof(float));
     }
     
-    Serial.println("----------MAMP DATA:----------");
+    Serial.println("\r\n\r\n----------MAMP DATA:----------\r\n");
     
-    Serial.print("ampX:\t");
+    nt = Serial.print("mampX:");
+    dispSpace(SPACE-nt);
     for(int i = 0; i<2; i++)
     {
-        Serial.print(mampX[i]);
-        Serial.print("\t\t");
-    }
-    
-    Serial.print("\r\nampY:\t");
-    for(int i = 0; i<2; i++)
-    {
-        Serial.print((long)mampY[i]);
-        Serial.print("\t\t");
-    }
-        
-    Serial.print("\r\nmampY_n:\t");
-    for(int i = 0; i<2; i++)
-    {
-        Serial.print((long)mampY_n[i]);
-        Serial.print("\t\t");
+        nt = Serial.print(dtaX[i]);
+        dispSpace(SPACE-nt);
     }
     Serial.println();
+    nt = Serial.print("mampY:");
+    dispSpace(SPACE-nt);
+    for(int i = 0; i<2; i++)
+    {
+        nt = Serial.print((long)dtaY[i]);
+        dispSpace(SPACE-nt);
+    }
+    
+    Serial.println();
+    nt = Serial.print("mampY_n:");
+    dispSpace(SPACE-nt);
+    for(int i = 0; i<2; i++)
+    {
+        nt = Serial.print((long)dtaY_n[i]);
+        dispSpace(SPACE-nt);
+    }
+    Serial.println();
+#endif
 }
 void setup()
 {
     Serial.begin(38400);
     Serial.println("hello world");
-    
+  
     if(EEPROM.read(1) != 0x55)      // no configed
     {
         Serial.println("bluetooth multimeter hadn't been configed!");
@@ -163,7 +203,9 @@ void setup()
     }
     
     readVol();
-    
+    readOhm();
+    readAmp();
+    readMAMP();
 
 }
 
